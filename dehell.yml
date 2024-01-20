@@ -1,0 +1,28 @@
+matching:
+  group:
+    exact:
+      - name: "Kotlin"
+        url: "https://kotlinlang.org"
+        value: "org.jetbrains.kotlin"
+    prefix:
+      - name: "Jetpack"
+        url: "https://developer.android.com/jetpack/androidx/explorer"
+        value: "androidx."
+  module:
+    prefix:
+      - name: "Kotlinx Coroutines"
+        url: "https://github.com/Kotlin/kotlinx.coroutines"
+        value: "org.jetbrains.kotlinx:kotlinx-coroutines"
+    regex:
+      - name: "Kotlinx Coroutines"
+        url: ""
+        value: "^\\w+(.\\w+)+(.\\w+.)?$"
+
+ignoring:
+  group:
+    prefix:
+      - "com.example."
+    exact:
+      - "com.example"
+    regex:
+      - "^com.example\\..*"

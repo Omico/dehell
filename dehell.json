@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$definitions": {
+    "matchedType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exact": {
+          "$ref": "#/$definitions/matchedRule",
+          "items": {
+            "properties": {
+              "value": {
+                "pattern": "^\\w+(.\\w+)+$"
+              }
+            }
+          }
+        },
+        "prefix": {
+          "$ref": "#/$definitions/matchedRule",
+          "items": {
+            "properties": {
+              "value": {
+                "pattern": "^\\w+(.\\w+)+(.\\w+.)?$"
+              }
+            }
+          }
+        },
+        "regex": {
+          "$ref": "#/$definitions/matchedRule",
+          "items": {
+            "properties": {
+              "value": {
+                "format": "regex"
+              }
+            }
+          }
+        }
+      }
+    },
+    "matchedRule": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "url",
+          "value"
+        ]
+      }
+    },
+    "ignoredType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exact": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\w+(.\\w+)+$"
+          }
+        },
+        "prefix": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\w+(.\\w+)+(.\\w+.)?$"
+          }
+        },
+        "regex": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "regex"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "matching": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "$ref": "#/$definitions/matchedType"
+        },
+        "name": {
+          "$ref": "#/$definitions/matchedType"
+        },
+        "module": {
+          "$ref": "#/$definitions/matchedType"
+        }
+      }
+    },
+    "ignoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "$ref": "#/$definitions/ignoredType"
+        },
+        "name": {
+          "$ref": "#/$definitions/ignoredType"
+        },
+        "module": {
+          "$ref": "#/$definitions/ignoredType"
+        }
+      }
+    }
+  }
+}
