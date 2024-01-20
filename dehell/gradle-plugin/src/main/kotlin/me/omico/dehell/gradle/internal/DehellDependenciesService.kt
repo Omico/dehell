@@ -16,10 +16,8 @@
 package me.omico.dehell.gradle.internal
 
 import kotlinx.serialization.encodeToString
-import me.omico.dehell.DehellIgnoreRule
-import me.omico.dehell.DehellMatchBy
-import me.omico.dehell.DehellMatchRule
-import me.omico.dehell.DehellMatchType
+import me.omico.dehell.DehellIgnoredRule
+import me.omico.dehell.DehellMatchedRule
 import me.omico.dehell.DehellRule
 import me.omico.dehell.gradle.DehellDependenciesTask
 import me.omico.dehell.serialization.DehellDependencyInfo
@@ -93,14 +91,14 @@ internal abstract class DehellDependenciesService : BuildService<DehellDependenc
     private fun <T : DehellRule> T.matchEachDependency(block: (dependency: Dependency) -> Unit): Unit =
         dependencies.forEach { dependency ->
             val targetValue: String = when (matchBy) {
-                is DehellMatchBy.Group -> dependency.group
-                is DehellMatchBy.Name -> dependency.name
-                is DehellMatchBy.Module -> dependency.module
+                is DehellRule.By.Group -> dependency.group
+                is DehellRule.By.Name -> dependency.name
+                is DehellRule.By.Module -> dependency.module
             }
             val result = when (matchType) {
-                is DehellMatchType.Exact -> value == targetValue
-                is DehellMatchType.Prefix -> targetValue.startsWith(value)
-                is DehellMatchType.Regex -> value.toRegex().matches(targetValue)
+                is DehellRule.Type.Exact -> value == targetValue
+                is DehellRule.Type.Prefix -> targetValue.startsWith(value)
+                is DehellRule.Type.Regex -> value.toRegex().matches(targetValue)
             }
             if (result) block(dependency)
         }
@@ -116,8 +114,8 @@ internal abstract class DehellDependenciesService : BuildService<DehellDependenc
     interface Parameters : BuildServiceParameters {
         val taskNames: ListProperty<String>
         val output: RegularFileProperty
-        val rules: SetProperty<DehellMatchRule>
-        val ignoreRules: SetProperty<DehellIgnoreRule>
+        val rules: SetProperty<DehellMatchedRule>
+        val ignoreRules: SetProperty<DehellIgnoredRule>
         val debug: Property<Boolean>
         val dehellDirectory: DirectoryProperty
     }

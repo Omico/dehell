@@ -18,8 +18,8 @@ package me.omico.dehell
 import java.io.Serializable
 
 abstract class DehellRule : Serializable, Comparable<DehellRule> {
-    abstract val matchBy: DehellMatchBy
-    abstract val matchType: DehellMatchType
+    abstract val matchBy: By
+    abstract val matchType: Type
     abstract val value: String
 
     override fun compareTo(other: DehellRule): Int {
@@ -40,5 +40,41 @@ abstract class DehellRule : Serializable, Comparable<DehellRule> {
     companion object {
         @Suppress("ConstPropertyName")
         private const val serialVersionUID = 1L
+    }
+
+    sealed class By(
+        private val weight: Int,
+    ) : Serializable, Comparable<By> {
+        fun readResolve(): Any = this
+
+        override fun compareTo(other: By): Int = weight.compareTo(other.weight)
+        override fun toString(): String = javaClass.simpleName
+
+        object Group : By(0)
+        object Name : By(1)
+        object Module : By(2)
+
+        companion object {
+            @Suppress("ConstPropertyName")
+            private const val serialVersionUID = 1L
+        }
+    }
+
+    sealed class Type(
+        private val weight: Int,
+    ) : Serializable, Comparable<Type> {
+        fun readResolve(): Any = this
+
+        override fun compareTo(other: Type): Int = weight.compareTo(other.weight)
+        override fun toString(): String = javaClass.simpleName
+
+        object Exact : Type(0)
+        object Prefix : Type(1)
+        object Regex : Type(2)
+
+        companion object {
+            @Suppress("ConstPropertyName")
+            private const val serialVersionUID = 1L
+        }
     }
 }

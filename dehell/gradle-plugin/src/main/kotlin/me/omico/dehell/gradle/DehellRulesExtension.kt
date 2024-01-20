@@ -15,50 +15,49 @@
  */
 package me.omico.dehell.gradle
 
-import me.omico.dehell.DehellIgnoreRule
-import me.omico.dehell.DehellMatchBy
-import me.omico.dehell.DehellMatchRule
-import me.omico.dehell.DehellMatchType
+import me.omico.dehell.DehellIgnoredRule
+import me.omico.dehell.DehellMatchedRule
+import me.omico.dehell.DehellRule
 
 interface DehellRulesExtension {
-    val rules: Set<DehellMatchRule>
-    val ignoreRules: Set<DehellIgnoreRule>
+    val rules: Set<DehellMatchedRule>
+    val ignoreRules: Set<DehellIgnoredRule>
 
     fun match(
         name: String,
         url: String,
-        by: DehellMatchBy,
-        type: DehellMatchType,
+        by: DehellRule.By,
+        type: DehellRule.Type,
         value: String,
     )
 
     fun match(
         name: String,
         url: String,
-        by: DehellMatchBy,
-        type: DehellMatchType,
+        by: DehellRule.By,
+        type: DehellRule.Type,
         vararg values: String,
     )
 
     fun ignore(
-        by: DehellMatchBy,
-        type: DehellMatchType,
+        by: DehellRule.By,
+        type: DehellRule.Type,
         value: String,
     )
 
     fun ignore(
-        by: DehellMatchBy,
-        type: DehellMatchType,
+        by: DehellRule.By,
+        type: DehellRule.Type,
         vararg values: String,
     )
 }
 
 abstract class DehellRulesExtensionImpl : DehellRulesExtension {
-    override val rules: MutableSet<DehellMatchRule> = mutableSetOf()
-    override val ignoreRules: MutableSet<DehellIgnoreRule> = mutableSetOf()
+    override val rules: MutableSet<DehellMatchedRule> = mutableSetOf()
+    override val ignoreRules: MutableSet<DehellIgnoredRule> = mutableSetOf()
 
-    override fun match(name: String, url: String, by: DehellMatchBy, type: DehellMatchType, value: String) {
-        DehellMatchRule(
+    override fun match(name: String, url: String, by: DehellRule.By, type: DehellRule.Type, value: String) {
+        DehellMatchedRule(
             name = name,
             url = url,
             matchBy = by,
@@ -70,8 +69,8 @@ abstract class DehellRulesExtensionImpl : DehellRulesExtension {
     override fun match(
         name: String,
         url: String,
-        by: DehellMatchBy,
-        type: DehellMatchType,
+        by: DehellRule.By,
+        type: DehellRule.Type,
         vararg values: String,
     ) {
         values.forEach { value ->
@@ -79,15 +78,15 @@ abstract class DehellRulesExtensionImpl : DehellRulesExtension {
         }
     }
 
-    override fun ignore(by: DehellMatchBy, type: DehellMatchType, value: String) {
-        DehellIgnoreRule(
+    override fun ignore(by: DehellRule.By, type: DehellRule.Type, value: String) {
+        DehellIgnoredRule(
             matchBy = by,
             matchType = type,
             value = value,
         ).also(ignoreRules::add)
     }
 
-    override fun ignore(by: DehellMatchBy, type: DehellMatchType, vararg values: String) {
+    override fun ignore(by: DehellRule.By, type: DehellRule.Type, vararg values: String) {
         values.forEach { value ->
             ignore(by, type, value)
         }
