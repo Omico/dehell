@@ -6,6 +6,7 @@ versions:
     android: "8.2.2"
     develocity: "3.17.5"
     spotless: "7.0.0.BETA1"
+  snakeyaml: "2.2"
 
 repositories:
   omico:
@@ -31,6 +32,10 @@ dependencies:
       kotlinx-serialization-json:
         alias: kotlinx.serialization.json
         version: ${versions.kotlinx.serialization}
+    org.yaml:
+      snakeyaml:
+        alias: snakeyaml
+        version: ${versions.snakeyaml}
   omico:
     me.omico.consensus:
       consensus-dsl:
