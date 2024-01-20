@@ -15,22 +15,10 @@
  */
 package me.omico.dehell
 
-import java.io.Serializable
-
-sealed class DehellMatchType(
-    private val weight: Int,
-) : Serializable, Comparable<DehellMatchType> {
-    fun readResolve(): Any = this
-
-    override fun compareTo(other: DehellMatchType): Int = weight.compareTo(other.weight)
-    override fun toString(): String = javaClass.simpleName
-
-    object Exact : DehellMatchType(0)
-    object Prefix : DehellMatchType(1)
-    object Regex : DehellMatchType(2)
-
-    companion object {
-        @Suppress("ConstPropertyName")
-        private const val serialVersionUID = 1L
-    }
-}
+data class DehellMatchedRule(
+    val name: String,
+    val url: String,
+    override val matchBy: By,
+    override val matchType: Type,
+    override val value: String,
+) : DehellRule()
