@@ -17,4 +17,5 @@ gradlePlugin {
 
 dependencies {
     implementation(kotlinx.serialization.json)
+    implementation(snakeyaml)
 }
