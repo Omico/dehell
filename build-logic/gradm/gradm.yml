@@ -1,7 +1,6 @@
 versions:
   consensus: "0.8.0"
   gradle: "8.5"
-  kotlin: "1.9.22"
   kotlinx.serialization: "1.6.2"
   plugins:
     android: "8.2.1"
