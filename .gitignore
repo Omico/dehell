@@ -1,0 +1,6 @@
+!/.idea/detekt.xml
+.DS_Store
+/.gradle
+/.idea
+/build
+/local.properties
