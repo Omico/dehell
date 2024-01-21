@@ -6,34 +6,52 @@
       "additionalProperties": false,
       "properties": {
         "exact": {
-          "$ref": "#/$definitions/matchedRule",
-          "items": {
-            "properties": {
-              "value": {
-                "pattern": "^\\w+(.\\w+)+$"
+          "allOf": [
+            {
+              "$ref": "#/$definitions/matchedRule"
+            },
+            {
+              "items": {
+                "properties": {
+                  "value": {
+                    "pattern": "^\\w+(.\\w+)+$"
+                  }
+                }
               }
             }
-          }
+          ]
         },
         "prefix": {
-          "$ref": "#/$definitions/matchedRule",
-          "items": {
-            "properties": {
-              "value": {
-                "pattern": "^\\w+(.\\w+)+(.\\w+.)?$"
+          "allOf": [
+            {
+              "$ref": "#/$definitions/matchedRule"
+            },
+            {
+              "items": {
+                "properties": {
+                  "value": {
+                    "pattern": "^\\w+(.\\w+)+(.\\w+.)?$"
+                  }
+                }
               }
             }
-          }
+          ]
         },
         "regex": {
-          "$ref": "#/$definitions/matchedRule",
-          "items": {
-            "properties": {
-              "value": {
-                "format": "regex"
+          "allOf": [
+            {
+              "$ref": "#/$definitions/matchedRule"
+            },
+            {
+              "items": {
+                "properties": {
+                  "value": {
+                    "format": "regex"
+                  }
+                }
               }
             }
-          }
+          ]
         }
       }
     },
