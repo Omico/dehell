@@ -24,7 +24,7 @@ import me.omico.dehell.DehellRule
 import me.omico.dehell.gradle.DehellDependenciesTask
 import me.omico.dehell.serialization.DehellDependencyInfo
 import me.omico.dehell.serialization.internal.prettyJson
-import org.gradle.api.artifacts.DependencyResolveDetails
+import org.gradle.api.artifacts.DependencyConstraint
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
@@ -38,11 +38,11 @@ internal abstract class DehellDependenciesService : BuildService<DehellDependenc
     private val matchedDependencies = mutableSetOf<Dependency>()
     private val resultDependencies = mutableSetOf<DehellDependencyInfo.Dependency>()
 
-    fun add(details: DependencyResolveDetails) {
+    fun add(dependencyConstraint: DependencyConstraint) {
         dependencies.add(
             Dependency(
-                group = details.requested.group,
-                name = details.requested.name,
+                group = dependencyConstraint.group,
+                name = dependencyConstraint.name,
             ),
         )
     }

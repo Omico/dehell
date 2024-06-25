@@ -23,7 +23,7 @@ import javax.inject.Inject
 internal abstract class DehellExtensionImpl(
     @Inject private val project: Project,
 ) : DehellExtension {
-    override var configuration: String = "compileClasspath"
+    override var variant: String? = null
     override var output: File = project.file("dehell-dependencies.json")
     override var debug: Boolean = false
 }

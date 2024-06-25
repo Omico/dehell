@@ -19,7 +19,7 @@ import org.gradle.api.plugins.ExtensionAware
 import java.io.File
 
 interface DehellExtension : ExtensionAware {
-    var configuration: String
+    var variant: String?
     var output: File
     var debug: Boolean
 }
