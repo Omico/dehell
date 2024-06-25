@@ -4,8 +4,8 @@ import me.omico.gradm.addDeclaredRepositories
 addDeclaredRepositories()
 
 plugins {
+    id("dehell.develocity")
     id("dehell.gradm")
-    id("dehell.gradle-enterprise")
 }
 
 includeBuild("build-logic/project")
