@@ -111,14 +111,8 @@
     "matching": {
       "type": "object",
       "additionalProperties": false,
-      "properties": {
-        "group": {
-          "$ref": "#/$definitions/matchedType"
-        },
-        "name": {
-          "$ref": "#/$definitions/matchedType"
-        },
-        "module": {
+      "patternProperties": {
+        "(group|name|module)": {
           "$ref": "#/$definitions/matchedType"
         }
       }
@@ -126,14 +120,8 @@
     "ignoring": {
       "type": "object",
       "additionalProperties": false,
-      "properties": {
-        "group": {
-          "$ref": "#/$definitions/ignoredType"
-        },
-        "name": {
-          "$ref": "#/$definitions/ignoredType"
-        },
-        "module": {
+      "patternProperties": {
+        "(group|name|module)": {
           "$ref": "#/$definitions/ignoredType"
         }
       }
