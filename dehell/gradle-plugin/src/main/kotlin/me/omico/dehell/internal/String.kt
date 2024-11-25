@@ -13,14 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.dehell.serialization.internal
+package me.omico.dehell.internal
 
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-
-@OptIn(ExperimentalSerializationApi::class)
-internal val prettyJson: Json =
-    Json {
-        prettyPrint = true
-        prettyPrintIndent = "  "
-    }
+internal fun String.ensureEndsWithNewLine(): String = if (endsWith('\n')) this else "$this\n"

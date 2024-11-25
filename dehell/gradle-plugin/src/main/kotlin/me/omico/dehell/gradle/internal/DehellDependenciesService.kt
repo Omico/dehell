@@ -22,9 +22,10 @@ import me.omico.dehell.DehellMatchRule
 import me.omico.dehell.DehellMatchType
 import me.omico.dehell.DehellRule
 import me.omico.dehell.gradle.DehellDependenciesTask
+import me.omico.dehell.internal.ensureEndsWithNewLine
 import me.omico.dehell.serialization.DehellDependencyInfo
 import me.omico.dehell.serialization.internal.prettyJson
-import org.gradle.api.artifacts.DependencyConstraint
+import org.gradle.api.artifacts.component.ModuleComponentSelector
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
@@ -33,16 +34,18 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 
-internal abstract class DehellDependenciesService : BuildService<DehellDependenciesService.Parameters>, AutoCloseable {
+internal abstract class DehellDependenciesService :
+    BuildService<DehellDependenciesService.Parameters>,
+    AutoCloseable {
     private val dependencies = mutableSetOf<Dependency>()
     private val matchedDependencies = mutableSetOf<Dependency>()
     private val resultDependencies = mutableSetOf<DehellDependencyInfo.Dependency>()
 
-    fun add(dependencyConstraint: DependencyConstraint) {
+    fun add(moduleComponentSelector: ModuleComponentSelector) {
         dependencies.add(
             Dependency(
-                group = dependencyConstraint.group,
-                name = dependencyConstraint.name,
+                group = moduleComponentSelector.group,
+                name = moduleComponentSelector.module,
             ),
         )
     }
@@ -79,7 +82,7 @@ internal abstract class DehellDependenciesService : BuildService<DehellDependenc
         val dependencyInfoContent = prettyJson.encodeToString(dependencyInfo)
         parameters.output.get().asFile.run {
             parentFile.mkdirs()
-            writeText(dependencyInfoContent)
+            writeText(dependencyInfoContent.ensureEndsWithNewLine())
         }
         if (debug) {
             dehellDirectory.resolve("dehell-dependencies.json").writeText(dependencyInfoContent)
@@ -105,14 +108,6 @@ internal abstract class DehellDependenciesService : BuildService<DehellDependenc
             if (result) block(dependency)
         }
 
-    data class Dependency(
-        val group: String,
-        val name: String,
-    ) : Comparable<Dependency> {
-        val module: String = "$group:$name"
-        override fun compareTo(other: Dependency): Int = module.compareTo(other.module)
-    }
-
     interface Parameters : BuildServiceParameters {
         val taskNames: ListProperty<String>
         val output: RegularFileProperty
@@ -120,5 +115,9 @@ internal abstract class DehellDependenciesService : BuildService<DehellDependenc
         val ignoreRules: SetProperty<DehellIgnoreRule>
         val debug: Property<Boolean>
         val dehellDirectory: DirectoryProperty
+    }
+
+    companion object {
+        const val NAME: String = "DehellDependenciesService"
     }
 }

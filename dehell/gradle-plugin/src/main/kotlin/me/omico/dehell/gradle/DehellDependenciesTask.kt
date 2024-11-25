@@ -15,11 +15,53 @@
  */
 package me.omico.dehell.gradle
 
+import me.omico.dehell.gradle.internal.DehellDependenciesService
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.artifacts.component.ModuleComponentSelector
+import org.gradle.api.artifacts.result.ResolvedComponentResult
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.diagnostics.internal.ConfigurationFinder
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault
 abstract class DehellDependenciesTask : DefaultTask() {
+    @get:Input
+    internal abstract val resolvedComponentResultProperty: Property<ResolvedComponentResult>
+
+    @get:Internal
+    internal abstract val dehellDependenciesServiceProperty: Property<DehellDependenciesService>
+
     init {
         group = "dehell"
+    }
+
+    internal fun Project.configure(
+        dehellExtension: DehellExtension,
+        dehellDependenciesServiceProvider: Provider<DehellDependenciesService>,
+    ) {
+        usesService(dehellDependenciesServiceProvider)
+        val configurationName = dehellExtension.variant
+            ?.let { variant -> "${variant}CompileClasspath" }
+            ?: "compileClasspath"
+        val configuration = ConfigurationFinder.find(configurations, configurationName)
+        resolvedComponentResultProperty.convention(configuration.incoming.resolutionResult.rootComponent)
+        dehellDependenciesServiceProperty.convention(dehellDependenciesServiceProvider)
+    }
+
+    @TaskAction
+    protected fun execute() {
+        val dehellDependenciesService = dehellDependenciesServiceProperty.get()
+        resolvedComponentResultProperty.get().dependencies
+            .filterIsInstance<ResolvedDependencyResult>()
+            .map(ResolvedDependencyResult::getRequested)
+            .filterIsInstance<ModuleComponentSelector>()
+            .forEach(dehellDependenciesService::add)
     }
 
     companion object {

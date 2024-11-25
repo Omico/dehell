@@ -19,9 +19,8 @@ import me.omico.dehell.gradle.internal.DehellDependenciesService
 import me.omico.dehell.gradle.internal.DehellExtensionImpl
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.registerIfAbsent
 
 @Suppress("unused")
@@ -37,34 +36,22 @@ class DehellPlugin : Plugin<Project> {
             name = "rules",
             instanceType = DehellRulesExtensionImpl::class,
         )
-        afterEvaluate {
-            val dehellDependenciesServiceProvider = gradle.sharedServices.registerIfAbsent(
-                name = "dehellDependenciesService",
-                implementationType = DehellDependenciesService::class,
-                configureAction = {
-                    parameters.run {
-                        taskNames.set(gradle.startParameter.taskNames)
-                        output.set(dehellExtension.output)
-                        rules.set(dehellRulesExtension.rules)
-                        ignoreRules.set(dehellRulesExtension.ignoreRules)
-                        debug.set(dehellExtension.debug)
-                        dehellDirectory.set(layout.buildDirectory.dir("dehell"))
-                    }
-                },
-            )
-            val compileKotlinTaskName = dehellExtension.variant
-                ?.let { variant -> "compile${variant.capitalized()}Kotlin" }
-                ?: "compileKotlin"
-            val configurationName = dehellExtension.variant
-                ?.let { variant -> "${variant}CompileClasspath" }
-                ?: "compileClasspath"
-            tasks.create<DehellDependenciesTask>(DehellDependenciesTask.NAME) {
-                dependsOn(compileKotlinTaskName)
-                usesService(dehellDependenciesServiceProvider)
-            }
-            val configuration = configurations[configurationName]
-            val dehellDependenciesService = dehellDependenciesServiceProvider.get()
-            configuration.allDependencyConstraints.configureEach(dehellDependenciesService::add)
+        val dehellDependenciesServiceProvider = gradle.sharedServices.registerIfAbsent(
+            name = DehellDependenciesService.NAME,
+            implementationType = DehellDependenciesService::class,
+            configureAction = {
+                parameters.run {
+                    taskNames.set(gradle.startParameter.taskNames)
+                    output.set(dehellExtension.output)
+                    rules.set(dehellRulesExtension.rules)
+                    ignoreRules.set(dehellRulesExtension.ignoreRules)
+                    debug.set(dehellExtension.debug)
+                    dehellDirectory.set(layout.buildDirectory.dir("dehell"))
+                }
+            },
+        )
+        tasks.register<DehellDependenciesTask>(DehellDependenciesTask.NAME) {
+            configure(dehellExtension, dehellDependenciesServiceProvider)
         }
     }
 }
