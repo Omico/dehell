@@ -1,4 +1,4 @@
-rootProject.name = "dehell-gradm"
+rootProject.name = "dehell-build-logic-gradm"
 
 pluginManagement {
     repositories {

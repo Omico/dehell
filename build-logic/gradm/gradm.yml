@@ -1,11 +1,10 @@
 versions:
-  consensus: "0.9.0"
-  gradle: "8.8"
+  consensus: "0.16.1"
   kotlinx.serialization: "1.6.3"
   plugins:
     android: "8.2.2"
-    develocity: "3.17.5"
-    spotless: "7.0.0.BETA1"
+    develocity: "3.18.2"
+    spotless: "7.0.0.BETA4"
 
 repositories:
   omico:
@@ -14,18 +13,16 @@ repositories:
   gradlePluginPortal:
 
 plugins:
-  google:
-    com.android.application: ${versions.plugins.android}
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
     com.gradle.develocity: ${versions.plugins.develocity}
-  omico:
-    me.omico.consensus.api: ${versions.consensus}
-    me.omico.consensus.git: ${versions.consensus}
-    me.omico.consensus.publishing: ${versions.consensus}
-    me.omico.consensus.spotless: ${versions.consensus}
 
 dependencies:
+  google:
+    com.android.tools.build:
+      gradle:
+        alias: androidGradlePlugin
+        version: ${versions.plugins.android}
   mavenCentral:
     org.jetbrains.kotlinx:
       kotlinx-serialization-json:
@@ -33,6 +30,6 @@ dependencies:
         version: ${versions.kotlinx.serialization}
   omico:
     me.omico.consensus:
-      consensus-dsl:
-        alias: me.omico.consensus.dsl
+      consensus-gradle-plugins:
+        alias: consensusGradlePlugins
         version: ${versions.consensus}

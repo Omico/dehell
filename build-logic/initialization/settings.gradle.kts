@@ -1,4 +1,4 @@
-rootProject.name = "dehell-initialization"
+rootProject.name = "dehell-build-logic-initialization"
 
 pluginManagement {
     includeBuild("../gradm")
