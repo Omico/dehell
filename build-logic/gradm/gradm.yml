@@ -1,8 +1,8 @@
 versions:
   consensus: "0.16.1"
-  kotlinx.serialization: "1.6.3"
+  kotlinx.serialization: "1.7.3"
   plugins:
-    android: "8.2.2"
+    android: "8.7.2"
     develocity: "3.18.2"
     spotless: "7.0.0.BETA4"
 
