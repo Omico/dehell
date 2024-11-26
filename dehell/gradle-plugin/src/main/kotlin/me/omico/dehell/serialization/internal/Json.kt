@@ -15,9 +15,23 @@
  */
 package me.omico.dehell.serialization.internal
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import me.omico.dehell.internal.ensureEndsWithNewLine
+import java.io.File
 
-internal val prettyJson: Json =
+@OptIn(ExperimentalSerializationApi::class)
+private val prettyJson: Json =
     Json {
         prettyPrint = true
+        prettyPrintIndent = "  "
     }
+
+internal inline fun <reified T> T.toJson(): String = prettyJson.encodeToString(this)
+
+internal inline fun <reified T> String.fromJson(): T = prettyJson.decodeFromString(this)
+
+internal inline fun <reified T> T.writeJsonToFile(file: File): Unit = file.writeText(toJson().ensureEndsWithNewLine())
+
+internal inline fun <reified T> File.readJson(): T = readText().fromJson()

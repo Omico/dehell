@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.dehell
+package me.omico.dehell.gradle.internal.tasks
 
-import java.io.Serializable
+import org.gradle.api.DefaultTask
 
-sealed class DehellMatchType(
-    private val weight: Int,
-) : Serializable, Comparable<DehellMatchType> {
-    fun readResolve(): Any = this
-
-    override fun compareTo(other: DehellMatchType): Int = weight.compareTo(other.weight)
-    override fun toString(): String = javaClass.simpleName
-
-    object Exact : DehellMatchType(0)
-    object Prefix : DehellMatchType(1)
-    object Regex : DehellMatchType(2)
+internal abstract class DehellTask : DefaultTask() {
+    init {
+        group = GROUP
+    }
 
     companion object {
-        @Suppress("ConstPropertyName")
-        private const val serialVersionUID = 1L
+        const val GROUP: String = "dehell"
     }
 }

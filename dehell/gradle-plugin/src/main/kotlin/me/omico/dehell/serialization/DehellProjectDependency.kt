@@ -15,25 +15,22 @@
  */
 package me.omico.dehell.serialization
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import me.omico.dehell.DehellMatchedRule
+import org.gradle.api.artifacts.component.ProjectComponentSelector
 
 @Serializable
-public data class DehellDependencyInfo(
-    val dependencies: List<Dependency> = emptyList(),
-    val mismatchedDependencies: List<String> = emptyList(),
-) {
-    @Serializable
-    public data class Dependency(
-        val name: String,
-        val url: String,
-    ) : Comparable<Dependency> {
-        override fun compareTo(other: Dependency): Int = name.compareTo(other.name)
-    }
+@SerialName("project")
+public data class DehellProjectDependency(
+    val path: String,
+) : DehellDependency,
+    Comparable<DehellProjectDependency> {
+    override fun compareTo(other: DehellProjectDependency): Int =
+        compareValuesBy(
+            a = this, b = other,
+            DehellProjectDependency::path,
+        )
 }
 
-public fun DehellMatchedRule.toDependency(): DehellDependencyInfo.Dependency =
-    DehellDependencyInfo.Dependency(
-        name = name,
-        url = url,
-    )
+public fun ProjectComponentSelector.toDehellProjectDependency(): DehellProjectDependency =
+    DehellProjectDependency(path = projectPath)

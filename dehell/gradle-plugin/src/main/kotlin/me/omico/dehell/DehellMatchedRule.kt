@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.dehell.gradle
+package me.omico.dehell
 
-import org.gradle.api.DefaultTask
-
-abstract class DehellDependenciesTask : DefaultTask() {
-    init {
-        group = "dehell"
-    }
-
-    companion object {
-        const val NAME = "dehellDependencies"
+public data class DehellMatchedRule(
+    val name: String,
+    val url: String,
+    override val by: By,
+    override val type: Type,
+    override val value: String,
+) : DehellRule() {
+    override fun compareTo(other: DehellRule): Int {
+        if (other !is DehellMatchedRule) return 1
+        return compareValuesBy(
+            this, other,
+            DehellMatchedRule::name,
+            DehellMatchedRule::url,
+            DehellMatchedRule::by,
+            DehellMatchedRule::type,
+            DehellMatchedRule::value,
+        )
     }
 }

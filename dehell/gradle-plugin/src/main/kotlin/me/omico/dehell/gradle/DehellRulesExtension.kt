@@ -15,81 +15,29 @@
  */
 package me.omico.dehell.gradle
 
-import me.omico.dehell.DehellIgnoreRule
-import me.omico.dehell.DehellMatchBy
-import me.omico.dehell.DehellMatchRule
-import me.omico.dehell.DehellMatchType
+import me.omico.dehell.DehellIgnoredRule
+import me.omico.dehell.DehellMatchedRule
+import me.omico.dehell.DehellRule.By
+import me.omico.dehell.DehellRule.Type
+import org.gradle.api.provider.SetProperty
 
-interface DehellRulesExtension {
-    val rules: Set<DehellMatchRule>
-    val ignoreRules: Set<DehellIgnoreRule>
+public interface DehellRulesExtension {
+    public val matchedRules: SetProperty<DehellMatchedRule>
+    public val ignoredRules: SetProperty<DehellIgnoredRule>
+    public fun match(name: String, url: String, by: By, type: Type, value: String)
+    public fun match(name: String, url: String, by: By, type: Type, vararg values: String)
+    public fun ignore(by: By, type: Type, value: String)
+    public fun ignore(by: By, type: Type, vararg values: String)
 
-    fun match(
-        name: String,
-        url: String,
-        by: DehellMatchBy,
-        type: DehellMatchType,
-        value: String,
-    )
+    public val group: By get() = By.Group
+    public val name: By get() = By.Name
+    public val module: By get() = By.Module
 
-    fun match(
-        name: String,
-        url: String,
-        by: DehellMatchBy,
-        type: DehellMatchType,
-        vararg values: String,
-    )
+    public val prefix: Type get() = Type.Prefix
+    public val exact: Type get() = Type.Exact
+    public val regex: Type get() = Type.Regex
 
-    fun ignore(
-        by: DehellMatchBy,
-        type: DehellMatchType,
-        value: String,
-    )
-
-    fun ignore(
-        by: DehellMatchBy,
-        type: DehellMatchType,
-        vararg values: String,
-    )
-}
-
-abstract class DehellRulesExtensionImpl : DehellRulesExtension {
-    override val rules: MutableSet<DehellMatchRule> = mutableSetOf()
-    override val ignoreRules: MutableSet<DehellIgnoreRule> = mutableSetOf()
-
-    override fun match(name: String, url: String, by: DehellMatchBy, type: DehellMatchType, value: String) {
-        DehellMatchRule(
-            name = name,
-            url = url,
-            matchBy = by,
-            matchType = type,
-            value = value,
-        ).also(rules::add)
-    }
-
-    override fun match(
-        name: String,
-        url: String,
-        by: DehellMatchBy,
-        type: DehellMatchType,
-        vararg values: String,
-    ) {
-        values.forEach { value ->
-            match(name, url, by, type, value)
-        }
-    }
-
-    override fun ignore(by: DehellMatchBy, type: DehellMatchType, value: String) {
-        DehellIgnoreRule(
-            matchBy = by,
-            matchType = type,
-            value = value,
-        ).also(ignoreRules::add)
-    }
-
-    override fun ignore(by: DehellMatchBy, type: DehellMatchType, vararg values: String) {
-        values.forEach { value ->
-            ignore(by, type, value)
-        }
+    public companion object {
+        public const val NAME: String = "rules"
     }
 }

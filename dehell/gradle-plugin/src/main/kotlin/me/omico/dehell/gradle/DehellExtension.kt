@@ -15,11 +15,29 @@
  */
 package me.omico.dehell.gradle
 
+import me.omico.dehell.gradle.internal.defaultDehellDependencyAggregatorOutputFileProvider
+import me.omico.dehell.gradle.internal.defaultDehellDependencyCollectorOutputFileProvider
+import me.omico.dehell.gradle.internal.defaultDehellDependencyInfoGeneratorOutputFile
+import org.gradle.api.file.ProjectLayout
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.ExtensionAware
-import java.io.File
+import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-interface DehellExtension : ExtensionAware {
-    var variant: String?
-    var output: File
-    var debug: Boolean
+public abstract class DehellExtension @Inject constructor(
+    objects: ObjectFactory,
+    layout: ProjectLayout,
+) : ExtensionAware {
+    public abstract val variant: Property<String>
+    public val dependencyCollectorOutputFile: RegularFileProperty =
+        objects.fileProperty().convention(layout.defaultDehellDependencyCollectorOutputFileProvider)
+    public val dependencyAggregatorOutputFile: RegularFileProperty =
+        objects.fileProperty().convention(layout.defaultDehellDependencyAggregatorOutputFileProvider)
+    public val dependencyInfoGeneratorOutputFile: RegularFileProperty =
+        objects.fileProperty().convention(layout.defaultDehellDependencyInfoGeneratorOutputFile)
+
+    public companion object {
+        public const val NAME: String = "dehell"
+    }
 }

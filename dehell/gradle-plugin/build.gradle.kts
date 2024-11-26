@@ -6,6 +6,10 @@ plugins {
     id("dehell.publishing")
 }
 
+kotlin {
+    explicitApi()
+}
+
 gradlePlugin {
     plugins {
         create("dehell") {

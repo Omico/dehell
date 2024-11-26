@@ -15,31 +15,32 @@ repositories {
 
 ```kotlin
 plugins {
-    id("me.omico.dehell") version "0.2.0"
+    id("me.omico.dehell") version "<version>"
 }
 
 dehell {
     variant = "release"
-    debug = true
-    output = file("src/main/res/raw/dehell-dependencies.json")
+    dependencyCollectorOutputFile = file("build/dehell/dependencies.json") // Optional
+    dependencyAggregatorOutputFile = file("build/dehell/dependencies-aggregated.json") // Optional
+    dependencyInfoGeneratorOutputFile = file("dehell-dependencies.json") // Optional
     rules {
         match(
             name = "Jetpack",
             url = "https://developer.android.com/jetpack/androidx/explorer",
-            by = DehellMatchBy.Group,
-            type = DehellMatchType.Prefix,
+            by = group,
+            type = prefix,
             value = "androidx.",
         )
         match(
             name = "Jetpack Compose",
             url = "https://developer.android.com/jetpack/androidx/explorer",
-            by = DehellMatchBy.Group,
-            type = DehellMatchType.Prefix,
+            by = group,
+            type = prefix,
             value = "androidx.compose.",
         )
         ignore(
-            by = DehellMatchBy.Group,
-            type = DehellMatchType.Exact,
+            by = group,
+            type = exact,
             values = arrayOf(
                 "com.example",
                 "org.jetbrains",
