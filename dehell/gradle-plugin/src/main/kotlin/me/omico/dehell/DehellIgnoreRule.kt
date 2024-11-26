@@ -15,7 +15,7 @@
  */
 package me.omico.dehell
 
-data class DehellIgnoreRule(
+public data class DehellIgnoreRule(
     override val matchBy: DehellMatchBy,
     override val matchType: DehellMatchType,
     override val value: String,

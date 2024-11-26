@@ -17,10 +17,12 @@ package me.omico.dehell
 
 import java.io.Serializable
 
-abstract class DehellRule : Serializable, Comparable<DehellRule> {
-    abstract val matchBy: DehellMatchBy
-    abstract val matchType: DehellMatchType
-    abstract val value: String
+public abstract class DehellRule :
+    Serializable,
+    Comparable<DehellRule> {
+    public abstract val matchBy: DehellMatchBy
+    public abstract val matchType: DehellMatchType
+    public abstract val value: String
 
     override fun compareTo(other: DehellRule): Int {
         var result = matchType.compareTo(other.matchType)
@@ -37,8 +39,8 @@ abstract class DehellRule : Serializable, Comparable<DehellRule> {
         return 0
     }
 
-    companion object {
-        @Suppress("ConstPropertyName")
-        private const val serialVersionUID = 1L
+    public companion object {
+        @Suppress("unused")
+        private const val serialVersionUID: Long = 1L
     }
 }

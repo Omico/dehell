@@ -15,7 +15,7 @@
  */
 package me.omico.dehell
 
-data class DehellMatchRule(
+public data class DehellMatchRule(
     val name: String,
     val url: String,
     override val matchBy: DehellMatchBy,

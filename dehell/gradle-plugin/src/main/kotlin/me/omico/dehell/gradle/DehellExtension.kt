@@ -15,11 +15,15 @@
  */
 package me.omico.dehell.gradle
 
-import org.gradle.api.plugins.ExtensionAware
-import java.io.File
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 
-interface DehellExtension : ExtensionAware {
-    var variant: String?
-    var output: File
-    var debug: Boolean
+public interface DehellExtension {
+    public val variant: Property<String>
+    public val dependencyCollectorOutputFile: RegularFileProperty
+    public val dependencyAggregatorOutputFile: RegularFileProperty
+
+    public companion object {
+        public const val NAME: String = "dehell"
+    }
 }

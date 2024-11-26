@@ -17,20 +17,21 @@ package me.omico.dehell
 
 import java.io.Serializable
 
-sealed class DehellMatchBy(
+public sealed class DehellMatchBy(
     private val weight: Int,
-) : Serializable, Comparable<DehellMatchBy> {
-    fun readResolve(): Any = this
+) : Serializable,
+    Comparable<DehellMatchBy> {
+    public fun readResolve(): Any = this
 
     override fun compareTo(other: DehellMatchBy): Int = weight.compareTo(other.weight)
     override fun toString(): String = javaClass.simpleName
 
-    object Group : DehellMatchBy(0)
-    object Name : DehellMatchBy(1)
-    object Module : DehellMatchBy(2)
+    public object Group : DehellMatchBy(0)
+    public object Name : DehellMatchBy(1)
+    public object Module : DehellMatchBy(2)
 
-    companion object {
-        @Suppress("ConstPropertyName")
-        private const val serialVersionUID = 1L
+    public companion object {
+        @Suppress("unused")
+        private const val serialVersionUID: Long = 1L
     }
 }

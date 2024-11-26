@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.dehell.gradle
+package me.omico.dehell.internal.tasks
 
 import org.gradle.api.DefaultTask
 
-abstract class DehellDependenciesTask : DefaultTask() {
+internal abstract class DehellTask : DefaultTask() {
     init {
-        group = "dehell"
+        group = GROUP
     }
 
     companion object {
-        const val NAME = "dehellDependencies"
+        const val GROUP: String = "dehell"
     }
 }
