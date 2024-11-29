@@ -45,9 +45,14 @@ internal abstract class DehellDependencyCollector : DehellDependencyTask() {
         dependencyServiceProvider: Provider<DehellDependencyService>,
     ) {
         configureDehellDependencyTask(dependencyServiceProvider)
-        val configurationName = dehellExtension.variant.orNull
-            ?.let { variant -> "${variant}CompileClasspath" }
-            ?: "compileClasspath"
+        val variant = dehellExtension.variant.getOrElse("")
+        require(variant.trim() == variant) {
+            "Variant name must not contain leading or trailing whitespace. You have set: \"$variant\""
+        }
+        val configurationName = when {
+            variant.isEmpty() -> "compileClasspath"
+            else -> "${variant}CompileClasspath"
+        }
         val configuration = ConfigurationFinder.find(configurations, configurationName)
         dependencyResultsProperty.convention(configuration.incoming.resolutionResult.rootComponent)
         outputFileProperty.convention(dehellExtension.dependencyCollectorOutputFile)

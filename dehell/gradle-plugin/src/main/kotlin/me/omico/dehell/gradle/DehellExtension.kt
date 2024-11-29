@@ -23,13 +23,14 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
+import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public abstract class DehellExtension @Inject constructor(
     objects: ObjectFactory,
     layout: ProjectLayout,
 ) : ExtensionAware {
-    public abstract val variant: Property<String>
+    public val variant: Property<String> = objects.property<String>().convention("")
     public val dependencyCollectorOutputFile: RegularFileProperty =
         objects.fileProperty().convention(layout.defaultDehellDependencyCollectorOutputFileProvider)
     public val dependencyAggregatorOutputFile: RegularFileProperty =
