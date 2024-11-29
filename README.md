@@ -23,14 +23,15 @@ plugins {
 }
 
 dehell {
-    // On Android, use `release` or `debug` or any other variant.
+    // In common Java/Kotlin projects, we don't need to set this.
+    // In Android projects, use `release` or `debug` or any other variant.
     variant = "release"
-    
+
     // The following three lines are optional, usually not necessary to change.
-    dependencyCollectorOutputFile = file("build/dehell/dependencies.json") 
+    dependencyCollectorOutputFile = file("build/dehell/dependencies.json")
     dependencyAggregatorOutputFile = file("build/dehell/dependencies-aggregated.json")
     dependencyInfoGeneratorOutputFile = file("dehell-dependencies.json")
-    
+
     // Only you use `dehellDependencyInfo` task, you should set the following rules to match or ignore dependencies.
     rules {
         match(
