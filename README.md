@@ -4,14 +4,18 @@
 
 ## Usage
 
-```kotlin
-repositories {
-    maven(url = "https://maven.omico.me")
-}
+In the root `settings.gradle.kts` file, add the following:
 
+```kotlin
+pluginManagement {
+    repositories {
+        maven(url = "https://maven.omico.me")
+        gradlePluginPortal()
+    }
+}
 ```
 
-### Android
+In your main `build.gradle.kts` file (for example on Android is `app/build.gradle.kts`), add the following:
 
 ```kotlin
 plugins {
@@ -19,10 +23,15 @@ plugins {
 }
 
 dehell {
+    // On Android, use `release` or `debug` or any other variant.
     variant = "release"
-    dependencyCollectorOutputFile = file("build/dehell/dependencies.json") // Optional
-    dependencyAggregatorOutputFile = file("build/dehell/dependencies-aggregated.json") // Optional
-    dependencyInfoGeneratorOutputFile = file("dehell-dependencies.json") // Optional
+    
+    // The following three lines are optional, usually not necessary to change.
+    dependencyCollectorOutputFile = file("build/dehell/dependencies.json") 
+    dependencyAggregatorOutputFile = file("build/dehell/dependencies-aggregated.json")
+    dependencyInfoGeneratorOutputFile = file("dehell-dependencies.json")
+    
+    // Only you use `dehellDependencyInfo` task, you should set the following rules to match or ignore dependencies.
     rules {
         match(
             name = "Jetpack",
