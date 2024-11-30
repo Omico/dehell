@@ -1,5 +1,6 @@
 versions:
   consensus: "0.16.1"
+  junit: "5.11.3"
   kotlinx.serialization: "1.7.3"
   plugins:
     android: "8.7.2"
@@ -28,6 +29,13 @@ dependencies:
       kotlinx-serialization-json:
         alias: kotlinx.serialization.json
         version: ${versions.kotlinx.serialization}
+    org.junit.jupiter:
+      junit-jupiter:
+        alias: junit.jupiter
+        version: ${versions.junit}
+    org.junit.platform:
+      junit-platform-launcher:
+        alias: junit.platform.launcher
   omico:
     me.omico.consensus:
       consensus-gradle-plugins:
