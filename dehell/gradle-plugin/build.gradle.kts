@@ -22,3 +22,15 @@ gradlePlugin {
 dependencies {
     implementation(kotlinx.serialization.json)
 }
+
+dependencies {
+    testImplementation(gradleTestKit())
+    testImplementation(junit.jupiter)
+    testRuntimeOnly(junit.platform.launcher)
+}
+
+tasks.test {
+    dependsOn(tasks.publishToMavenLocal)
+    useJUnitPlatform()
+    environment("DEHELL_VERSION", version)
+}
