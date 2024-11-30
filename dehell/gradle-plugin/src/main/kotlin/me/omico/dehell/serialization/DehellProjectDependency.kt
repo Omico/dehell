@@ -32,5 +32,7 @@ public data class DehellProjectDependency(
         )
 }
 
+public typealias DehellProjectDependencyList = List<DehellProjectDependency>
+
 public fun ProjectComponentSelector.toDehellProjectDependency(): DehellProjectDependency =
     DehellProjectDependency(path = projectPath)

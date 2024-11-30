@@ -38,6 +38,8 @@ public data class DehellModuleDependency(
         )
 }
 
+public typealias DehellModuleDependencyList = List<DehellModuleDependency>
+
 public fun ModuleComponentSelector.toDehellModuleDependency(): DehellModuleDependency =
     DehellModuleDependency(
         group = group,
