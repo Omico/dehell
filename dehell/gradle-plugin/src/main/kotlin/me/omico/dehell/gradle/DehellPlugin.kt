@@ -35,7 +35,6 @@ public class DehellPlugin : Plugin<Project> {
             instanceType = DehellRulesExtensionImpl::class,
         )
         val dehellDependencyServiceProvider = gradle.registerDehellDependencyServiceIfAbsent()
-        val rootDehellCollectDependenciesTask = rootProject.tasks.maybeCreate(DehellDependencyCollector.NAME)
         afterEvaluate {
             val dehellCollectDependenciesTask = createDehellCollectDependenciesTask(
                 dehellExtension = dehellExtension,
@@ -49,8 +48,13 @@ public class DehellPlugin : Plugin<Project> {
                 dehellExtension = dehellExtension,
                 dehellRulesExtension = dehellRulesExtension,
             )
-            rootDehellCollectDependenciesTask.dependsOn(dehellCollectDependenciesTask)
-            dehellDependencyAggregatorTask.dependsOn(rootDehellCollectDependenciesTask)
+            if (rootProject == this) {
+                dehellDependencyAggregatorTask.dependsOn(dehellCollectDependenciesTask)
+            } else {
+                val rootDehellCollectDependenciesTask = rootProject.tasks.maybeCreate(DehellDependencyCollector.NAME)
+                rootDehellCollectDependenciesTask.dependsOn(dehellCollectDependenciesTask)
+                dehellDependencyAggregatorTask.dependsOn(rootDehellCollectDependenciesTask)
+            }
             dehellDependencyInfoGeneratorTask.dependsOn(dehellDependencyAggregatorTask)
         }
     }
