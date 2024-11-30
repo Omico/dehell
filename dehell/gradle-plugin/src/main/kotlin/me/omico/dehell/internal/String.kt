@@ -13,17 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.dehell.gradle.internal
+package me.omico.dehell.internal
 
-import me.omico.dehell.gradle.DehellExtension
-import org.gradle.api.Project
-import java.io.File
-import javax.inject.Inject
-
-internal abstract class DehellExtensionImpl(
-    @Inject private val project: Project,
-) : DehellExtension {
-    override var variant: String? = null
-    override var output: File = project.file("dehell-dependencies.json")
-    override var debug: Boolean = false
-}
+internal fun String.ensureEndsWithNewLine(): String = if (endsWith('\n')) this else "$this\n"

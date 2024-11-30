@@ -4,42 +4,53 @@
 
 ## Usage
 
-```kotlin
-repositories {
-    maven(url = "https://maven.omico.me")
-}
+In the root `settings.gradle.kts` file, add the following:
 
+```kotlin
+pluginManagement {
+    repositories {
+        maven(url = "https://maven.omico.me")
+        gradlePluginPortal()
+    }
+}
 ```
 
-### Android
+In your main `build.gradle.kts` file (for example on Android is `app/build.gradle.kts`), add the following:
 
 ```kotlin
 plugins {
-    id("me.omico.dehell") version "0.2.0"
+    id("me.omico.dehell") version "<version>"
 }
 
 dehell {
+    // In common Java/Kotlin projects, we don't need to set this.
+    // In Android projects, use `release` or `debug` or any other variant.
     variant = "release"
-    debug = true
-    output = file("src/main/res/raw/dehell-dependencies.json")
+
+    // The following three lines are optional, usually not necessary to change.
+    dependencyCollectorOutputFile = file("build/dehell/dependencies.json")
+    dependencyAggregatorOutputFile = file("build/dehell/dependencies-aggregated.json")
+    dependencyInfoGeneratorOutputFile = file("dehell-dependencies.json")
+
+    // Only you use `dehellDependencyInfo` task, you should set the following rules to match or ignore dependencies.
     rules {
         match(
             name = "Jetpack",
             url = "https://developer.android.com/jetpack/androidx/explorer",
-            by = DehellMatchBy.Group,
-            type = DehellMatchType.Prefix,
+            by = group,
+            type = prefix,
             value = "androidx.",
         )
         match(
             name = "Jetpack Compose",
             url = "https://developer.android.com/jetpack/androidx/explorer",
-            by = DehellMatchBy.Group,
-            type = DehellMatchType.Prefix,
+            by = group,
+            type = prefix,
             value = "androidx.compose.",
         )
         ignore(
-            by = DehellMatchBy.Group,
-            type = DehellMatchType.Exact,
+            by = group,
+            type = exact,
             values = arrayOf(
                 "com.example",
                 "org.jetbrains",

@@ -15,8 +15,18 @@
  */
 package me.omico.dehell
 
-data class DehellIgnoreRule(
-    override val matchBy: DehellMatchBy,
-    override val matchType: DehellMatchType,
+public data class DehellIgnoredRule(
+    override val by: By,
+    override val type: Type,
     override val value: String,
-) : DehellRule()
+) : DehellRule() {
+    override fun compareTo(other: DehellRule): Int {
+        if (other !is DehellIgnoredRule) return 1
+        return compareValuesBy(
+            this, other,
+            DehellIgnoredRule::by,
+            DehellIgnoredRule::type,
+            DehellIgnoredRule::value,
+        )
+    }
+}
