@@ -37,7 +37,7 @@ internal abstract class DehellDependencyService : BuildService<BuildServiceParam
     fun aggregateDependencies(projectPath: String, outputFile: File) {
         val aggregatedDependencies = mutableSetOf<DehellModuleDependency>()
         aggregateDependencies(aggregatedDependencies, projectPath)
-        aggregatedDependencies.writeJsonToFile(outputFile)
+        aggregatedDependencies.sorted().writeJsonToFile(outputFile)
     }
 
     private fun aggregateDependencies(aggregatedDependencies: MutableSet<DehellModuleDependency>, projectPath: String) {
