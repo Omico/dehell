@@ -22,15 +22,16 @@ import me.omico.dehell.internal.ensureEndsWithNewLine
 import java.io.File
 
 @OptIn(ExperimentalSerializationApi::class)
-private val prettyJson: Json =
+private val json: Json =
     Json {
         prettyPrint = true
         prettyPrintIndent = "  "
+        ignoreUnknownKeys = true
     }
 
-internal inline fun <reified T> T.toJson(): String = prettyJson.encodeToString(this)
+internal inline fun <reified T> T.toJson(): String = json.encodeToString(this)
 
-internal inline fun <reified T> String.fromJson(): T = prettyJson.decodeFromString(this)
+internal inline fun <reified T> String.fromJson(): T = json.decodeFromString(this)
 
 internal inline fun <reified T> T.writeJsonToFile(file: File): Unit = file.writeText(toJson().ensureEndsWithNewLine())
 
