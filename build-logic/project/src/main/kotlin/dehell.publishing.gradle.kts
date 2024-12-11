@@ -40,6 +40,8 @@ consensus {
             }
             signing {
                 if (isSnapshot) return@signing
+                // Skip signing CI builds to avoid the release version failing for integration testing.
+                if (isCi) return@signing
                 useGpgCmd()
                 sign(publications)
             }
