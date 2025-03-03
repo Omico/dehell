@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +22,15 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 abstract class DehellSpecification {
-    @TempDir
-    lateinit var testProjectDirectory: File
+    @TempDir lateinit var testProjectDirectory: File
     lateinit var settingsKotlinScript: File
     lateinit var buildKotlinScript: File
 
-    val dehellVersion: String = System.getenv("DEHELL_VERSION")
+    protected val dehellVersion: String = System.getenv("DEHELL_VERSION")
 
     @BeforeEach
     protected fun setup() {
-        settingsKotlinScript = testProjectDirectory.resolve(GRADLE_SETTINGS_SCRIPT_NAME)
+        settingsKotlinScript = testProjectDirectory.resolve(GRADLE_KOTLIN_SETTINGS_SCRIPT_NAME)
         buildKotlinScript = testProjectDirectory.resolve(GRADLE_KOTLIN_BUILD_SCRIPT_NAME)
     }
 
@@ -48,6 +47,7 @@ abstract class DehellSpecification {
         val buildResult = GradleRunner.create()
             .withProjectDir(testProjectDirectory)
             .withArguments(*arguments)
+            .forwardOutput()
             .build()
         result(buildResult)
     }
@@ -75,4 +75,4 @@ abstract class DehellSpecification {
 }
 
 private const val GRADLE_KOTLIN_BUILD_SCRIPT_NAME: String = "build.gradle.kts"
-private const val GRADLE_SETTINGS_SCRIPT_NAME: String = "settings.gradle.kts"
+private const val GRADLE_KOTLIN_SETTINGS_SCRIPT_NAME: String = "settings.gradle.kts"
