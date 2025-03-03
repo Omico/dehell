@@ -4,6 +4,7 @@ plugins {
     `kotlin-dsl`
     embeddedKotlin("plugin.serialization")
     id("dehell.publishing")
+    id("dehell.spotless-kotlin")
 }
 
 kotlin {

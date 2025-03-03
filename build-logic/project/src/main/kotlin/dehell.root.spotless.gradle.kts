@@ -9,18 +9,14 @@ requireRootProject()
 
 consensus {
     spotless {
-        rootProject {
-            freshmark()
-            gradleProperties()
-        }
-        allprojects {
-            kotlin(
-                targets = ConsensusSpotlessTokens.Kotlin.targets + setOf(
-                    "build-logic/**/src/main/kotlin/**/*.kt",
-                ),
-                licenseHeaderFile = rootProject.file("spotless/copyright.kt").takeIf(File::exists),
-            )
-            kotlinGradle()
-        }
+        freshmark()
+        gradleProperties()
+        kotlin(
+            targets = ConsensusSpotlessTokens.Kotlin.targets + setOf(
+                "build-logic/**/src/main/kotlin/**/*.kt",
+            ),
+            licenseHeaderFile = rootProject.file("spotless/copyright.kt").takeIf(File::exists),
+        )
+        kotlinGradle()
     }
 }

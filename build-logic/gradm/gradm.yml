@@ -1,11 +1,10 @@
 versions:
-  consensus: "0.16.1"
+  consensus: "0.18.1"
   junit: "5.11.3"
   kotlinx.serialization: "1.7.3"
   plugins:
     android: "8.7.2"
-    develocity: "3.18.2"
-    spotless: "7.0.0.BETA4"
+    develocity: "3.19.2"
 
 repositories:
   omico:
@@ -15,7 +14,6 @@ repositories:
 
 plugins:
   gradlePluginPortal:
-    com.diffplug.spotless: ${versions.plugins.spotless}
     com.gradle.develocity: ${versions.plugins.develocity}
 
 dependencies:

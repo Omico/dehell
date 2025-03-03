@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(com.diffplug.spotless)
     implementation(consensusGradlePlugins)
     implementation(gradmGeneratedJar)
 }
