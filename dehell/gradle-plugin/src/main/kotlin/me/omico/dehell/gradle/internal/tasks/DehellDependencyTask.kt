@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,25 @@ import me.omico.dehell.gradle.internal.services.DehellDependencyService
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.services.ServiceReference
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 
 internal abstract class DehellDependencyTask : DehellTask() {
     @get:Input
-    abstract val projectPathProperty: Property<String>
+    protected abstract val projectPathProperty: Property<String>
+
+    @Suppress("UnstableApiUsage")
+    @get:ServiceReference(DehellDependencyService.NAME)
+    protected abstract val dependencyServiceProperty: Property<DehellDependencyService>
 
     @get:Internal
-    abstract val dependencyServiceProperty: Property<DehellDependencyService>
+    protected val dehellDependencyService: DehellDependencyService
+        get() = dependencyServiceProperty.get()
 
     protected fun Project.configureDehellDependencyTask(dependencyServiceProvider: Provider<DehellDependencyService>) {
         // Always run the task to ensure that the DehellDependencyService can grab the latest dependencies.
         outputs.upToDateWhen { false }
-        usesService(dependencyServiceProvider)
         dependencyServiceProperty.convention(dependencyServiceProvider)
         projectPathProperty.convention(path)
     }

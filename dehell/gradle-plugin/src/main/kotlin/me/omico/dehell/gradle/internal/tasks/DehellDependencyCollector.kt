@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ internal abstract class DehellDependencyCollector : DehellDependencyTask() {
 
     @TaskAction
     protected fun collect() {
-        val dehellDependencyService = dependencyServiceProperty.get()
         val projectPath = projectPathProperty.get()
         val dependencyResults = dependencyResultsProperty.get()
         val outputFile = outputFileProperty.get().asFile

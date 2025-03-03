@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ internal abstract class DehellDependencyAggregator : DehellDependencyTask() {
     @TaskAction
     protected fun aggregate() {
         val projectPath = projectPathProperty.get()
-        val dehellDependencyService = dependencyServiceProperty.get()
         val dependencyAggregatorOutputFile = outputFileProperty.get().asFile
         dehellDependencyService.aggregateDependencies(projectPath, dependencyAggregatorOutputFile)
     }
