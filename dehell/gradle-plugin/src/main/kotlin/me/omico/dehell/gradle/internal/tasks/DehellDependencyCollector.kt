@@ -18,10 +18,10 @@ package me.omico.dehell.gradle.internal.tasks
 import me.omico.dehell.gradle.DehellExtension
 import me.omico.dehell.gradle.internal.services.DehellDependencyService
 import me.omico.dehell.gradle.internal.tasks.DehellDependencyCollector.Companion.NAME
+import me.omico.dehell.gradle.mapper.toDehellDependency
 import me.omico.dehell.serialization.DehellDependencyComparator
 import me.omico.dehell.serialization.DehellModuleDependency
 import me.omico.dehell.serialization.internal.writeJsonToFile
-import me.omico.dehell.serialization.toDehellDependency
 import org.gradle.api.Project
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.file.RegularFileProperty

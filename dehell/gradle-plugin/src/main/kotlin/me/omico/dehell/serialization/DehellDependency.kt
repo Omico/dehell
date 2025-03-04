@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,15 @@
 package me.omico.dehell.serialization
 
 import kotlinx.serialization.Serializable
-import org.gradle.api.artifacts.component.ComponentSelector
-import org.gradle.api.artifacts.component.ModuleComponentSelector
-import org.gradle.api.artifacts.component.ProjectComponentSelector
 
 @Serializable
 public sealed interface DehellDependency
 
-public typealias DehellDependencyList = List<DehellDependency>
-
-public fun ComponentSelector.toDehellDependency(): DehellDependency =
-    when (this) {
-        is ProjectComponentSelector -> toDehellProjectDependency()
-        is ModuleComponentSelector -> toDehellModuleDependency()
-        else -> error("Unsupported component selector: $this")
-    }
-
 public object DehellDependencyComparator : Comparator<DehellDependency> {
-    override fun compare(a: DehellDependency, b: DehellDependency): Int =
+    override fun compare(o1: DehellDependency, o2: DehellDependency): Int =
         when {
-            a is DehellProjectDependency && b is DehellProjectDependency -> a.compareTo(b)
-            a is DehellModuleDependency && b is DehellModuleDependency -> a.compareTo(b)
-            else -> a::class.qualifiedName!!.compareTo(b::class.qualifiedName!!)
+            o1 is DehellProjectDependency && o2 is DehellProjectDependency -> o1.compareTo(o2)
+            o1 is DehellModuleDependency && o2 is DehellModuleDependency -> o1.compareTo(o2)
+            else -> o1::class.qualifiedName!!.compareTo(o2::class.qualifiedName!!)
         }
 }

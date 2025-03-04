@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 Omico
+ * Copyright 2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.dehell.serialization
+package me.omico.dehell.gradle.mapper
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import me.omico.dehell.serialization.DehellModuleDependency
+import org.gradle.api.artifacts.component.ModuleComponentSelector
 
-@Serializable
-@SerialName("project")
-public data class DehellProjectDependency(
-    val path: String,
-) : DehellDependency,
-    Comparable<DehellProjectDependency> {
-    override fun compareTo(other: DehellProjectDependency): Int =
-        compareValuesBy(
-            a = this, b = other,
-            DehellProjectDependency::path,
-        )
-}
+public fun ModuleComponentSelector.toDehellModuleDependency(): DehellModuleDependency =
+    DehellModuleDependency(
+        group = group,
+        name = module,
+        version = version,
+    )

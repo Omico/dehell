@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package me.omico.dehell.serialization
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.gradle.api.artifacts.component.ModuleComponentSelector
 
 @Serializable
 @SerialName("module")
@@ -37,12 +36,3 @@ public data class DehellModuleDependency(
             DehellModuleDependency::version,
         )
 }
-
-public typealias DehellModuleDependencyList = List<DehellModuleDependency>
-
-public fun ModuleComponentSelector.toDehellModuleDependency(): DehellModuleDependency =
-    DehellModuleDependency(
-        group = group,
-        name = module,
-        version = version,
-    )
