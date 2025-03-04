@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.gradle.kotlin.dsl.create
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.register
 
 internal abstract class DehellDependencyInfoGenerator : DehellTask() {
     @get:InputFile
@@ -123,10 +124,10 @@ internal abstract class DehellDependencyInfoGenerator : DehellTask() {
     }
 }
 
-internal fun Project.createDehellDependencyInfoGeneratorTask(
+internal fun Project.registerDehellDependencyInfoGeneratorTask(
     dehellExtension: DehellExtension,
     dehellRulesExtension: DehellRulesExtension,
-): DehellDependencyInfoGenerator =
-    tasks.create<DehellDependencyInfoGenerator>(DehellDependencyInfoGenerator.NAME) {
+): TaskProvider<DehellDependencyInfoGenerator> =
+    tasks.register<DehellDependencyInfoGenerator>(DehellDependencyInfoGenerator.NAME) {
         configureDehellDependencyInfoGenerator(dehellExtension, dehellRulesExtension)
     }

@@ -30,8 +30,9 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.diagnostics.internal.ConfigurationFinder
-import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.register
 
 internal abstract class DehellDependencyCollector : DehellDependencyTask() {
     @get:Input
@@ -86,10 +87,10 @@ internal abstract class DehellDependencyCollector : DehellDependencyTask() {
     }
 }
 
-internal fun Project.createDehellCollectDependenciesTask(
+internal fun Project.registerDehellCollectDependenciesTask(
     dehellExtension: DehellExtension,
     dependencyServiceProvider: Provider<DehellDependencyService>,
-): DehellDependencyCollector =
-    tasks.create<DehellDependencyCollector>(NAME) {
+): TaskProvider<DehellDependencyCollector> =
+    tasks.register<DehellDependencyCollector>(NAME) {
         configureDehellDependencyCollector(dehellExtension, dependencyServiceProvider)
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package me.omico.dehell.gradle
 import me.omico.dehell.gradle.internal.DehellRulesExtensionImpl
 import me.omico.dehell.gradle.internal.services.registerDehellDependencyServiceIfAbsent
 import me.omico.dehell.gradle.internal.tasks.DehellDependencyCollector
-import me.omico.dehell.gradle.internal.tasks.createDehellCollectDependenciesTask
-import me.omico.dehell.gradle.internal.tasks.createDehellDependencyAggregatorTask
-import me.omico.dehell.gradle.internal.tasks.createDehellDependencyInfoGeneratorTask
+import me.omico.dehell.gradle.internal.tasks.registerDehellCollectDependenciesTask
+import me.omico.dehell.gradle.internal.tasks.registerDehellDependencyAggregatorTask
+import me.omico.dehell.gradle.internal.tasks.registerDehellDependencyInfoGeneratorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
@@ -36,26 +36,32 @@ public class DehellPlugin : Plugin<Project> {
         )
         val dehellDependencyServiceProvider = gradle.registerDehellDependencyServiceIfAbsent()
         afterEvaluate {
-            val dehellCollectDependenciesTask = createDehellCollectDependenciesTask(
+            val dehellCollectDependenciesTask = registerDehellCollectDependenciesTask(
                 dehellExtension = dehellExtension,
                 dependencyServiceProvider = dehellDependencyServiceProvider,
             )
-            val dehellDependencyAggregatorTask = createDehellDependencyAggregatorTask(
+            val dehellDependencyAggregatorTask = registerDehellDependencyAggregatorTask(
                 dehellExtension = dehellExtension,
                 dependencyServiceProvider = dehellDependencyServiceProvider,
             )
-            val dehellDependencyInfoGeneratorTask = createDehellDependencyInfoGeneratorTask(
+            val dehellDependencyInfoGeneratorTask = registerDehellDependencyInfoGeneratorTask(
                 dehellExtension = dehellExtension,
                 dehellRulesExtension = dehellRulesExtension,
             )
             if (rootProject == this) {
-                dehellDependencyAggregatorTask.dependsOn(dehellCollectDependenciesTask)
+                dehellDependencyAggregatorTask.configure {
+                    dependsOn(dehellCollectDependenciesTask)
+                }
             } else {
                 val rootDehellCollectDependenciesTask = rootProject.tasks.maybeCreate(DehellDependencyCollector.NAME)
                 rootDehellCollectDependenciesTask.dependsOn(dehellCollectDependenciesTask)
-                dehellDependencyAggregatorTask.dependsOn(rootDehellCollectDependenciesTask)
+                dehellDependencyAggregatorTask.configure {
+                    dependsOn(rootDehellCollectDependenciesTask)
+                }
             }
-            dehellDependencyInfoGeneratorTask.dependsOn(dehellDependencyAggregatorTask)
+            dehellDependencyInfoGeneratorTask.configure {
+                dependsOn(dehellDependencyAggregatorTask)
+            }
         }
     }
 }

@@ -23,7 +23,8 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.gradle.kotlin.dsl.create
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.register
 
 internal abstract class DehellDependencyAggregator : DehellDependencyTask() {
     @get:OutputFile
@@ -49,10 +50,10 @@ internal abstract class DehellDependencyAggregator : DehellDependencyTask() {
     }
 }
 
-internal fun Project.createDehellDependencyAggregatorTask(
+internal fun Project.registerDehellDependencyAggregatorTask(
     dehellExtension: DehellExtension,
     dependencyServiceProvider: Provider<DehellDependencyService>,
-): DehellDependencyAggregator =
-    tasks.create<DehellDependencyAggregator>(NAME) {
+): TaskProvider<DehellDependencyAggregator> =
+    tasks.register<DehellDependencyAggregator>(NAME) {
         configureDehellDependencyAggregator(dehellExtension, dependencyServiceProvider)
     }
