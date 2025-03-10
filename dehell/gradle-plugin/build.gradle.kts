@@ -31,7 +31,5 @@ dependencies {
 }
 
 tasks.test {
-    dependsOn(tasks.publishToMavenLocal)
     useJUnitPlatform()
-    environment("DEHELL_VERSION", version)
 }
