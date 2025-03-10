@@ -27,7 +27,6 @@ internal abstract class DehellDependencyTask : DehellTask() {
     @get:Input
     protected abstract val projectPathProperty: Property<String>
 
-    @Suppress("UnstableApiUsage")
     @get:ServiceReference(DehellDependencyService.NAME)
     protected abstract val dependencyServiceProperty: Property<DehellDependencyService>
 
