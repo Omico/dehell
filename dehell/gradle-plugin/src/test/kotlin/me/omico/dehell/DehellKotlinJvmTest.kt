@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ class DehellKotlinJvmTest : DehellSpecification() {
     @Test
     fun `test single module project`(): Unit = runTest(
         settingsKotlinScriptContent = {
+            // language=kotlin
             """
             |pluginManagement {
             |    repositories {
@@ -43,22 +44,16 @@ class DehellKotlinJvmTest : DehellSpecification() {
             """.trimMargin()
         },
         buildKotlinScriptContent = {
+            // language=kotlin
             """
             |plugins {
             |    embeddedKotlin("jvm")
-            |    id("me.omico.dehell") version "$dehellVersion"
+            |    id("me.omico.dehell")
             |}
             |
             |dependencies {
             |    implementation(kotlin("stdlib"))
             |    implementation(kotlin("reflect"))
-            |}
-            |
-            |tasks.register("printDehellDependencyInfo") {
-            |    dependsOn("dehellDependencyInfo")
-            |    doLast {
-            |        dehell.dependencyInfoGeneratorOutputFile.get().asFile.readText().also { println(it) }
-            |    }
             |}
             """.trimMargin()
         },
@@ -90,6 +85,7 @@ class DehellKotlinJvmTest : DehellSpecification() {
     @Test
     fun `test multi-module project`(): Unit = runTest(
         settingsKotlinScriptContent = {
+            // language=kotlin
             """
             |pluginManagement {
             |    repositories {
@@ -111,10 +107,11 @@ class DehellKotlinJvmTest : DehellSpecification() {
             submodule(
                 name = "core",
                 buildKotlinScriptContent = {
+                    // language=kotlin
                     """
                     |plugins {
                     |    embeddedKotlin("jvm")
-                    |    id("me.omico.dehell") version "$dehellVersion"
+                    |    id("me.omico.dehell")
                     |}
                     |
                     |dependencies {
@@ -127,10 +124,11 @@ class DehellKotlinJvmTest : DehellSpecification() {
             submodule(
                 name = "main",
                 buildKotlinScriptContent = {
+                    // language=kotlin
                     """
                     |plugins {
                     |    embeddedKotlin("jvm")
-                    |    id("me.omico.dehell") version "$dehellVersion"
+                    |    id("me.omico.dehell")
                     |}
                     |
                     |dependencies {

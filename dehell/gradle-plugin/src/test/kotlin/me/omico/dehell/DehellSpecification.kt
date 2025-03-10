@@ -26,8 +26,6 @@ abstract class DehellSpecification {
     lateinit var settingsKotlinScript: File
     lateinit var buildKotlinScript: File
 
-    protected val dehellVersion: String = System.getenv("DEHELL_VERSION")
-
     @BeforeEach
     protected fun setup() {
         settingsKotlinScript = testProjectDirectory.resolve(GRADLE_KOTLIN_SETTINGS_SCRIPT_NAME)
@@ -37,6 +35,7 @@ abstract class DehellSpecification {
     fun runTest(
         settingsKotlinScriptContent: () -> String = { "" },
         buildKotlinScriptContent: () -> String = { "" },
+        noConfigurationCache: Boolean = true,
         vararg arguments: String = emptyArray(),
         submodules: SubmoduleCreator.() -> Unit = {},
         result: BuildResult.() -> Unit,
@@ -44,9 +43,15 @@ abstract class DehellSpecification {
         settingsKotlinScript.writeText(settingsKotlinScriptContent())
         buildKotlinScript.writeText(buildKotlinScriptContent())
         SubmoduleCreatorImpl(testProjectDirectory).submodules()
+        val arguments = buildSet {
+            addAll(arguments)
+            add("--stacktrace")
+            if (noConfigurationCache) add("--no-configuration-cache")
+        }
         val buildResult = GradleRunner.create()
             .withProjectDir(testProjectDirectory)
-            .withArguments(*arguments)
+            .withArguments(arguments.toList())
+            .withPluginClasspath()
             .forwardOutput()
             .build()
         result(buildResult)
