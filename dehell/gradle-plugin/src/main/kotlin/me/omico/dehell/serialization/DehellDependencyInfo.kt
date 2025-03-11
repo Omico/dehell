@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import me.omico.dehell.DehellMatchedRule
 
 @Serializable
 public data class DehellDependencyInfo(
-    val dependencies: List<Dependency> = emptyList(),
-    val mismatchedDependencies: List<String> = emptyList(),
+    val dependencies: Set<Dependency> = emptySet(),
+    val mismatchedDependencies: Set<String> = emptySet(),
 ) {
     @Serializable
     public data class Dependency(

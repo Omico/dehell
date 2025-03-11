@@ -89,12 +89,12 @@ internal abstract class DehellDependencyInfoGenerator : DehellTask() {
             }
         }
         val dependencyInfo = DehellDependencyInfo(
-            dependencies = resultDependencies.sorted(),
+            dependencies = resultDependencies.toSortedSet(),
             mismatchedDependencies = run {
                 dependencies
                     .subtract(matchedDependencies)
                     .map(DehellModuleDependency::module)
-                    .sorted()
+                    .toSortedSet()
             },
         )
         dependencyInfo.writeJsonToFile(dependencyInfoFile)
@@ -129,5 +129,8 @@ internal fun Project.registerDehellDependencyInfoGeneratorTask(
     dehellRulesExtension: DehellRulesExtension,
 ): TaskProvider<DehellDependencyInfoGenerator> =
     tasks.register<DehellDependencyInfoGenerator>(DehellDependencyInfoGenerator.NAME) {
-        configureDehellDependencyInfoGenerator(dehellExtension, dehellRulesExtension)
+        configureDehellDependencyInfoGenerator(
+            dehellExtension = dehellExtension,
+            dehellRulesExtension = dehellRulesExtension,
+        )
     }
