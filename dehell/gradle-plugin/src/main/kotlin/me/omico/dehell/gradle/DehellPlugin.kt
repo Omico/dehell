@@ -35,33 +35,31 @@ public class DehellPlugin : Plugin<Project> {
             instanceType = DehellRulesExtensionImpl::class,
         )
         val dehellDependencyServiceProvider = gradle.registerDehellDependencyServiceIfAbsent()
-        afterEvaluate {
-            val dehellCollectDependenciesTask = registerDehellCollectDependenciesTask(
-                dehellExtension = dehellExtension,
-                dependencyServiceProvider = dehellDependencyServiceProvider,
-            )
-            val dehellDependencyAggregatorTask = registerDehellDependencyAggregatorTask(
-                dehellExtension = dehellExtension,
-                dependencyServiceProvider = dehellDependencyServiceProvider,
-            )
-            val dehellDependencyInfoGeneratorTask = registerDehellDependencyInfoGeneratorTask(
-                dehellExtension = dehellExtension,
-                dehellRulesExtension = dehellRulesExtension,
-            )
-            if (rootProject == this) {
-                dehellDependencyAggregatorTask.configure {
-                    dependsOn(dehellCollectDependenciesTask)
-                }
-            } else {
-                val rootDehellCollectDependenciesTask = rootProject.tasks.maybeCreate(DehellDependencyCollector.NAME)
-                rootDehellCollectDependenciesTask.dependsOn(dehellCollectDependenciesTask)
-                dehellDependencyAggregatorTask.configure {
-                    dependsOn(rootDehellCollectDependenciesTask)
-                }
+        val dehellCollectDependenciesTask = registerDehellCollectDependenciesTask(
+            dehellExtension = dehellExtension,
+            dependencyServiceProvider = dehellDependencyServiceProvider,
+        )
+        val dehellDependencyAggregatorTask = registerDehellDependencyAggregatorTask(
+            dehellExtension = dehellExtension,
+            dependencyServiceProvider = dehellDependencyServiceProvider,
+        )
+        val dehellDependencyInfoGeneratorTask = registerDehellDependencyInfoGeneratorTask(
+            dehellExtension = dehellExtension,
+            dehellRulesExtension = dehellRulesExtension,
+        )
+        if (rootProject == this) {
+            dehellDependencyAggregatorTask.configure {
+                dependsOn(dehellCollectDependenciesTask)
             }
-            dehellDependencyInfoGeneratorTask.configure {
-                dependsOn(dehellDependencyAggregatorTask)
+        } else {
+            val rootDehellCollectDependenciesTask = rootProject.tasks.maybeCreate(DehellDependencyCollector.NAME)
+            rootDehellCollectDependenciesTask.dependsOn(dehellCollectDependenciesTask)
+            dehellDependencyAggregatorTask.configure {
+                dependsOn(rootDehellCollectDependenciesTask)
             }
+        }
+        dehellDependencyInfoGeneratorTask.configure {
+            dependsOn(dehellDependencyAggregatorTask)
         }
     }
 }
