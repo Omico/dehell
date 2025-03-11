@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package me.omico.dehell.gradle
 import me.omico.dehell.gradle.internal.defaultDehellDependencyAggregatorOutputFileProvider
 import me.omico.dehell.gradle.internal.defaultDehellDependencyCollectorOutputFileProvider
 import me.omico.dehell.gradle.internal.defaultDehellDependencyInfoGeneratorOutputFile
+import me.omico.dehell.gradle.internal.defaultDehellDependencyReportOutputFile
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -37,6 +38,8 @@ public abstract class DehellExtension @Inject constructor(
         objects.fileProperty().convention(layout.defaultDehellDependencyAggregatorOutputFileProvider)
     public val dependencyInfoGeneratorOutputFile: RegularFileProperty =
         objects.fileProperty().convention(layout.defaultDehellDependencyInfoGeneratorOutputFile)
+    public val dependencyReportOutputFile: RegularFileProperty =
+        objects.fileProperty().convention(layout.defaultDehellDependencyReportOutputFile)
 
     public companion object {
         public const val NAME: String = "dehell"

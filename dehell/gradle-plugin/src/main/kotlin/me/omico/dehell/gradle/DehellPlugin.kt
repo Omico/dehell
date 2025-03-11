@@ -34,7 +34,9 @@ public class DehellPlugin : Plugin<Project> {
             name = DehellRulesExtension.NAME,
             instanceType = DehellRulesExtensionImpl::class,
         )
-        val dehellDependencyServiceProvider = gradle.registerDehellDependencyServiceIfAbsent()
+        val dehellDependencyServiceProvider = gradle.registerDehellDependencyServiceIfAbsent(
+            dehellExtension = dehellExtension,
+        )
         val dehellCollectDependenciesTask = registerDehellCollectDependenciesTask(
             dehellExtension = dehellExtension,
             dependencyServiceProvider = dehellDependencyServiceProvider,

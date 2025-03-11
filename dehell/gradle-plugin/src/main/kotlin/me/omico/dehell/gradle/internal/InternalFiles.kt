@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Omico
+ * Copyright 2024-2025 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,3 +31,6 @@ internal val ProjectLayout.defaultDehellDependencyAggregatorOutputFileProvider: 
 
 internal val ProjectLayout.defaultDehellDependencyInfoGeneratorOutputFile: RegularFile
     get() = projectDirectory.file("dehell-dependencies.json")
+
+internal val ProjectLayout.defaultDehellDependencyReportOutputFile: Provider<RegularFile>
+    get() = dehellBuildDirectory.map { directory -> directory.file("dependency-report.json") }
