@@ -26,8 +26,7 @@ dependencies {
 
 dependencies {
     testImplementation(gradleTestKit())
-    testImplementation(junit.jupiter)
-    testRuntimeOnly(junit.platform.launcher)
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {

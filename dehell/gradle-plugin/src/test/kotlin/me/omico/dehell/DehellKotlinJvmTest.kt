@@ -17,74 +17,33 @@ package me.omico.dehell
 
 import me.omico.dehell.serialization.DehellModuleDependency
 import me.omico.dehell.serialization.DehellModuleDependencyList
-import me.omico.dehell.serialization.internal.readJson
 import org.gradle.kotlin.dsl.embeddedKotlinVersion
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import org.gradle.testkit.runner.BuildResult
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @Suppress("LongMethod")
 class DehellKotlinJvmTest : DehellSpecification() {
     @Test
-    fun `test single module project`(): Unit = runTest(
-        settingsKotlinScriptContent = {
-            // language=kotlin
-            """
-            |pluginManagement {
-            |    repositories {
-            |        mavenLocal()
-            |        gradlePluginPortal()
-            |    }
-            |}
-            |
-            |dependencyResolutionManagement {
-            |    repositories {
-            |        mavenCentral()
-            |    }
-            |}
-            """.trimMargin()
-        },
-        buildKotlinScriptContent = {
-            // language=kotlin
-            """
-            |plugins {
-            |    embeddedKotlin("jvm")
-            |    id("me.omico.dehell")
-            |}
-            |
-            |dependencies {
-            |    implementation(kotlin("stdlib"))
-            |    implementation(kotlin("reflect"))
-            |}
-            """.trimMargin()
-        },
+    fun `test single module project`(): Unit = runJvmTest(
         arguments = arrayOf(":dehellDependencyInfo"),
         result = {
-            val dependencies = testProjectDirectory.resolve("build/dehell/dependencies.json")
-                .readJson<DehellModuleDependencyList>()
-            val aggregatedDependencies = testProjectDirectory.resolve("build/dehell/dependencies-aggregated.json")
-                .readJson<DehellModuleDependencyList>()
-            assertEquals(aggregatedDependencies, dependencies)
+            val aggregatedDependencies = actualAggregatedDependencies()
             assertEquals(
-                listOf(
-                    DehellModuleDependency(
-                        group = "org.jetbrains.kotlin",
-                        name = "kotlin-reflect",
-                        version = embeddedKotlinVersion,
-                    ),
-                    DehellModuleDependency(
-                        group = "org.jetbrains.kotlin",
-                        name = "kotlin-stdlib",
-                        version = embeddedKotlinVersion,
-                    ),
-                ),
-                aggregatedDependencies,
+                expected = aggregatedDependencies,
+                actual = actualDependencies(),
+            )
+            assertEquals(
+                expected = DEFAULT_EXPECTED_DEPENDENCIES,
+                actual = aggregatedDependencies,
             )
         },
     )
 
     @Test
-    fun `test multi-module project`(): Unit = runTest(
-        settingsKotlinScriptContent = {
+    fun `test multi-module project`(): Unit = runJvmTest(
+        gradleKotlinSettingsScriptContent = {
             // language=kotlin
             """
             |pluginManagement {
@@ -106,20 +65,7 @@ class DehellKotlinJvmTest : DehellSpecification() {
         submodules = {
             submodule(
                 name = "core",
-                buildKotlinScriptContent = {
-                    // language=kotlin
-                    """
-                    |plugins {
-                    |    embeddedKotlin("jvm")
-                    |    id("me.omico.dehell")
-                    |}
-                    |
-                    |dependencies {
-                    |    implementation(kotlin("stdlib"))
-                    |    implementation(kotlin("reflect"))
-                    |}
-                    """.trimMargin()
-                },
+                buildKotlinScriptContent = { DEFAULT_GRADLE_KOTLIN_BUILD_SCRIPT_CONTENT },
             )
             submodule(
                 name = "main",
@@ -140,23 +86,101 @@ class DehellKotlinJvmTest : DehellSpecification() {
         },
         arguments = arrayOf(":main:dehellDependencyInfo"),
         result = {
-            val aggregatedDependencies = testProjectDirectory.resolve("main/build/dehell/dependencies-aggregated.json")
-                .readJson<DehellModuleDependencyList>()
             assertEquals(
-                listOf(
-                    DehellModuleDependency(
-                        group = "org.jetbrains.kotlin",
-                        name = "kotlin-reflect",
-                        version = embeddedKotlinVersion,
-                    ),
-                    DehellModuleDependency(
-                        group = "org.jetbrains.kotlin",
-                        name = "kotlin-stdlib",
-                        version = embeddedKotlinVersion,
-                    ),
-                ),
-                aggregatedDependencies,
+                expected = DEFAULT_EXPECTED_DEPENDENCIES,
+                actual = actualAggregatedDependencies("main"),
             )
         },
     )
+
+    @Test
+    fun `test custom output file location`(): Unit = runJvmTest(
+        gradleKotlinBuildScriptContent = {
+            // language=kotlin
+            """
+            |plugins {
+            |    embeddedKotlin("jvm")
+            |    id("me.omico.dehell")
+            |}
+            |
+            |dehell {
+            |    dependencyCollectorOutputFile = file("dependencies.json")
+            |    dependencyAggregatorOutputFile = file("dependencies-aggregated.json")
+            |    dependencyInfoGeneratorOutputFile = file("dependencies-info.json")
+            |}
+            |
+            |dependencies {
+            |    implementation(kotlin("stdlib"))
+            |    implementation(kotlin("reflect"))
+            |}
+            """.trimMargin()
+        },
+        result = {
+            assertTrue(actual = testProjectDirectory.resolve("dependencies.json").exists())
+            assertTrue(actual = testProjectDirectory.resolve("dependencies-aggregated.json").exists())
+            assertTrue(actual = testProjectDirectory.resolve("dependencies-info.json").exists())
+        },
+    )
+
+    private fun runJvmTest(
+        gradleKotlinSettingsScriptContent: () -> String = { DEFAULT_GRADLE_KOTLIN_SETTINGS_SCRIPT_CONTENT },
+        gradleKotlinBuildScriptContent: () -> String = { DEFAULT_GRADLE_KOTLIN_BUILD_SCRIPT_CONTENT },
+        noConfigurationCache: Boolean = true,
+        vararg arguments: String = arrayOf(":dehellDependencyInfo"),
+        submodules: SubmoduleCreator.() -> Unit = {},
+        result: BuildResult.() -> Unit,
+    ): Unit =
+        runTest(
+            gradleKotlinSettingsScriptContent = gradleKotlinSettingsScriptContent,
+            gradleKotlinBuildScriptContent = gradleKotlinBuildScriptContent,
+            noConfigurationCache = noConfigurationCache,
+            arguments = arguments,
+            submodules = submodules,
+            result = result,
+        )
 }
+
+private val DEFAULT_GRADLE_KOTLIN_SETTINGS_SCRIPT_CONTENT: String =
+    // language=kotlin
+    """
+    |pluginManagement {
+    |    repositories {
+    |        mavenLocal()
+    |        gradlePluginPortal()
+    |    }
+    |}
+    |
+    |dependencyResolutionManagement {
+    |    repositories {
+    |        mavenCentral()
+    |    }
+    |}
+    """.trimMargin()
+
+private val DEFAULT_GRADLE_KOTLIN_BUILD_SCRIPT_CONTENT: String =
+    // language=kotlin
+    """
+    |plugins {
+    |    embeddedKotlin("jvm")
+    |    id("me.omico.dehell")
+    |}
+    |
+    |dependencies {
+    |    implementation(kotlin("stdlib"))
+    |    implementation(kotlin("reflect"))
+    |}
+    """.trimMargin()
+
+private val DEFAULT_EXPECTED_DEPENDENCIES: DehellModuleDependencyList =
+    listOf(
+        DehellModuleDependency(
+            group = "org.jetbrains.kotlin",
+            name = "kotlin-reflect",
+            version = embeddedKotlinVersion,
+        ),
+        DehellModuleDependency(
+            group = "org.jetbrains.kotlin",
+            name = "kotlin-stdlib",
+            version = embeddedKotlinVersion,
+        ),
+    )

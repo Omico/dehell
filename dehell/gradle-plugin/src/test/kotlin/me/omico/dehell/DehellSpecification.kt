@@ -15,33 +15,36 @@
  */
 package me.omico.dehell
 
+import me.omico.dehell.DehellSpecification.SubmoduleCreator
+import me.omico.dehell.serialization.DehellModuleDependencyList
+import me.omico.dehell.serialization.internal.readJson
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import kotlin.test.BeforeTest
 
 abstract class DehellSpecification {
     @TempDir lateinit var testProjectDirectory: File
-    lateinit var settingsKotlinScript: File
-    lateinit var buildKotlinScript: File
+    lateinit var gradleKotlinSettingsScript: File
+    lateinit var gradleKotlinBuildScript: File
 
-    @BeforeEach
+    @BeforeTest
     protected fun setup() {
-        settingsKotlinScript = testProjectDirectory.resolve(GRADLE_KOTLIN_SETTINGS_SCRIPT_NAME)
-        buildKotlinScript = testProjectDirectory.resolve(GRADLE_KOTLIN_BUILD_SCRIPT_NAME)
+        gradleKotlinSettingsScript = testProjectDirectory.resolve(GRADLE_KOTLIN_SETTINGS_SCRIPT_NAME)
+        gradleKotlinBuildScript = testProjectDirectory.resolve(GRADLE_KOTLIN_BUILD_SCRIPT_NAME)
     }
 
-    fun runTest(
-        settingsKotlinScriptContent: () -> String = { "" },
-        buildKotlinScriptContent: () -> String = { "" },
+    protected fun runTest(
+        gradleKotlinSettingsScriptContent: () -> String = { "" },
+        gradleKotlinBuildScriptContent: () -> String = { "" },
         noConfigurationCache: Boolean = true,
         vararg arguments: String = emptyArray(),
         submodules: SubmoduleCreator.() -> Unit = {},
         result: BuildResult.() -> Unit,
     ) {
-        settingsKotlinScript.writeText(settingsKotlinScriptContent())
-        buildKotlinScript.writeText(buildKotlinScriptContent())
+        gradleKotlinSettingsScript.writeText(gradleKotlinSettingsScriptContent())
+        gradleKotlinBuildScript.writeText(gradleKotlinBuildScriptContent())
         SubmoduleCreatorImpl(testProjectDirectory).submodules()
         val arguments = buildSet {
             addAll(arguments)
@@ -57,25 +60,33 @@ abstract class DehellSpecification {
         result(buildResult)
     }
 
+    protected fun actualDependencies(modulePath: String = "."): DehellModuleDependencyList =
+        testProjectDirectory.resolve(modulePath).resolve("build/dehell/dependencies.json")
+            .readJson<DehellModuleDependencyList>()
+
+    protected fun actualAggregatedDependencies(modulePath: String = "."): DehellModuleDependencyList =
+        testProjectDirectory.resolve(modulePath).resolve("build/dehell/dependencies-aggregated.json")
+            .readJson<DehellModuleDependencyList>()
+
     interface SubmoduleCreator {
         fun submodule(
             name: String,
             buildKotlinScriptContent: () -> String = { "" },
         )
     }
+}
 
-    private class SubmoduleCreatorImpl(
-        private val testProjectDirectory: File,
-    ) : SubmoduleCreator {
-        override fun submodule(
-            name: String,
-            buildKotlinScriptContent: () -> String,
-        ) {
-            val submoduleDirectory = testProjectDirectory.resolve(name)
-            submoduleDirectory.mkdirs()
-            val buildKotlinScript = submoduleDirectory.resolve(GRADLE_KOTLIN_BUILD_SCRIPT_NAME)
-            buildKotlinScript.writeText(buildKotlinScriptContent())
-        }
+private class SubmoduleCreatorImpl(
+    private val testProjectDirectory: File,
+) : SubmoduleCreator {
+    override fun submodule(
+        name: String,
+        buildKotlinScriptContent: () -> String,
+    ) {
+        val submoduleDirectory = testProjectDirectory.resolve(name)
+        submoduleDirectory.mkdirs()
+        val buildKotlinScript = submoduleDirectory.resolve(GRADLE_KOTLIN_BUILD_SCRIPT_NAME)
+        buildKotlinScript.writeText(buildKotlinScriptContent())
     }
 }
 
